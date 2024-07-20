@@ -2,118 +2,84 @@ package com.example.loginauthapi.controllers;
 
 import com.example.loginauthapi.domain.cake.CakeModel;
 import com.example.loginauthapi.domain.cake.Complement;
-import com.example.loginauthapi.domain.cake.Filling;
-import com.example.loginauthapi.domain.cake.PaymentMethod;
-import com.example.loginauthapi.service.CakeService;
-import lombok.RequiredArgsConstructor;
+import com.example.loginauthapi.dto.CakeModelRequestDTO;
+import com.example.loginauthapi.dto.ComplementRequestDTO;
+import com.example.loginauthapi.repositories.CakeModelRepository;
+import com.example.loginauthapi.repositories.ComplementRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/cake")
-@RequiredArgsConstructor
-public class CakeController {
-    private final CakeService cakeService;
 
-    // Endpoints para gerenciar modelos de bolo
+public class CakeController {
+    @Autowired
+    private CakeModelRepository cakeModelRepository;
+    @Autowired
+    private ComplementRepository complementRepository;
+
+
     @GetMapping("/models")
-    public ResponseEntity<List<CakeModel>> findAllCakeModels() {
-        List<CakeModel> cakeModels = cakeService.findAllCakeModels();
-        return ResponseEntity.ok(cakeModels);
+    public ResponseEntity<List<CakeModel>> getAllCakeModels() {
+        List<CakeModel> listModels = cakeModelRepository.findAll();
+        return ResponseEntity.ok(listModels);
+    }
+
+    @PostMapping("/models/register")
+    public ResponseEntity<String> saveCakeModel(@RequestBody CakeModelRequestDTO body) {
+        CakeModel newCakeModel = new CakeModel();
+        newCakeModel.setName(body.name());
+        newCakeModel.setImage(body.image());
+        this.cakeModelRepository.save(newCakeModel);
+        return ResponseEntity.ok("Sucesso!");
     }
 
     @GetMapping("/models/{id}")
-    public ResponseEntity<CakeModel> findCakeModelById(@PathVariable Long id) {
-        CakeModel cakeModel = cakeService.findCakeModelById(id);
-        return ResponseEntity.ok(cakeModel);
-    }
-
-    @PostMapping("/models")
-    public ResponseEntity<CakeModel> saveCakeModel(@RequestBody CakeModel cakeModel) {
-        CakeModel savedCakeModel = cakeService.saveCakeModel(cakeModel);
-        return ResponseEntity.ok(savedCakeModel);
+    public ResponseEntity<CakeModel> getCakeModelsDetails(@PathVariable Long id) {
+        Optional<CakeModel> cakeModel = this.cakeModelRepository.findById(id);
+        return cakeModel.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/models/{id}")
-    public ResponseEntity<Void> deleteCakeModel(@PathVariable Long id) {
-        cakeService.deleteCakeModel(id);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<String> deleteCakeModel(@PathVariable Long id) {
+        Optional<CakeModel> existingCakeModel = cakeModelRepository.findById(id);
+
+        if (existingCakeModel.isPresent()) {
+            cakeModelRepository.delete(existingCakeModel.get());
+            return ResponseEntity.ok("Modelo de bolo deletado com sucesso!");
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
-    // Endpoints para gerenciar recheios
-    @GetMapping("/fillings")
-    public ResponseEntity<List<Filling>> findAllFillings() {
-        List<Filling> fillings = cakeService.findAllFillings();
-        return ResponseEntity.ok(fillings);
+    @PutMapping("/models/{id}")
+    public ResponseEntity<String> updateCakeModel(@PathVariable Long id, @RequestBody CakeModelRequestDTO body) {
+        Optional<CakeModel> existingCakeModel = cakeModelRepository.findById(id);
+
+        if (existingCakeModel.isPresent()) {
+            CakeModel cakeModel = existingCakeModel.get();
+            cakeModel.setName(body.name());
+            cakeModel.setImage(body.image());
+            cakeModelRepository.save(cakeModel);
+            return ResponseEntity.ok("Modelo de bolo atualizado com sucesso!");
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
-    @GetMapping("/fillings/{id}")
-    public ResponseEntity<Filling> findFillingById(@PathVariable Long id) {
-        Filling filling = cakeService.findFillingById(id);
-        return ResponseEntity.ok(filling);
+    @PostMapping("/complement/register")
+    public ResponseEntity<String> registerCakeComplement(@RequestBody ComplementRequestDTO body) {
+        Complement newComplement = new Complement();
+        newComplement.setName(body.name());
+        newComplement.setprice(body.price());
+        this.complementRepository.save(newComplement);
+        return ResponseEntity.ok("Sucesso!");
     }
 
-    @PostMapping("/fillings")
-    public ResponseEntity<Filling> saveFilling(@RequestBody Filling filling) {
-        Filling savedFilling = cakeService.saveFilling(filling);
-        return ResponseEntity.ok(savedFilling);
-    }
 
-    @DeleteMapping("/fillings/{id}")
-    public ResponseEntity<Void> deleteFilling(@PathVariable Long id) {
-        cakeService.deleteFilling(id);
-        return ResponseEntity.noContent().build();
-    }
 
-    // Endpoints para gerenciar complementos
-    @GetMapping("/complements")
-    public ResponseEntity<List<Complement>> findAllComplements() {
-        List<Complement> complements = cakeService.findAllComplements();
-        return ResponseEntity.ok(complements);
-    }
-
-    @GetMapping("/complements/{id}")
-    public ResponseEntity<Complement> findComplementById(@PathVariable Long id) {
-        Complement complement = cakeService.findComplementById(id);
-        return ResponseEntity.ok(complement);
-    }
-
-    @PostMapping("/complements")
-    public ResponseEntity<Complement> saveComplement(@RequestBody Complement complement) {
-        Complement savedComplement = cakeService.saveComplement(complement);
-        return ResponseEntity.ok(savedComplement);
-    }
-
-    @DeleteMapping("/complements/{id}")
-    public ResponseEntity<Void> deleteComplement(@PathVariable Long id) {
-        cakeService.deleteComplement(id);
-        return ResponseEntity.noContent().build();
-    }
-
-    // Endpoints para gerenciar formas de pagamento
-    @GetMapping("/payment-methods")
-    public ResponseEntity<List<PaymentMethod>> findAllPaymentMethods() {
-        List<PaymentMethod> paymentMethods = cakeService.findAllPaymentMethods();
-        return ResponseEntity.ok(paymentMethods);
-    }
-
-    @GetMapping("/payment-methods/{id}")
-    public ResponseEntity<PaymentMethod> findPaymentMethodById(@PathVariable Long id) {
-        PaymentMethod paymentMethod = cakeService.findPaymentMethodById(id);
-        return ResponseEntity.ok(paymentMethod);
-    }
-
-    @PostMapping("/payment-methods")
-    public ResponseEntity<PaymentMethod> savePaymentMethod(@RequestBody PaymentMethod paymentMethod) {
-        PaymentMethod savedPaymentMethod = cakeService.savePaymentMethod(paymentMethod);
-        return ResponseEntity.ok(savedPaymentMethod);
-    }
-
-    @DeleteMapping("/payment-methods/{id}")
-    public ResponseEntity<Void> deletePaymentMethod(@PathVariable Long id) {
-        cakeService.deletePaymentMethod(id);
-        return ResponseEntity.noContent().build();
-    }
 }
