@@ -1,4 +1,4 @@
 package com.example.loginauthapi.dto;
 
-public record ComplementRequestDTO(String name, Double price) {
+public record ComplementRequestDTO(String complement_name, Double price) {
 }

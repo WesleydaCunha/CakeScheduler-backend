@@ -32,10 +32,16 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/register").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/cake/models/register").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/auth/get").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/cake/models/{id}").permitAll()
                         .requestMatchers(HttpMethod.GET, "/cake/models").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/cake/models/register").permitAll()
                         .requestMatchers(HttpMethod.POST, "/cake/complement/register").permitAll()
-
+                        .requestMatchers(HttpMethod.POST, "/cake/fillings/register").permitAll()
+                        .requestMatchers(HttpMethod.POST, "cake/payment-methods/register").permitAll()
+                        .requestMatchers(HttpMethod.POST, "orders/register").permitAll()
+                        .requestMatchers(HttpMethod.GET, "orders/all").permitAll()
+                        .requestMatchers(HttpMethod.GET, "orders/{id}").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class);

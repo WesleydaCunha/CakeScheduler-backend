@@ -17,7 +17,17 @@ public class Filling {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(nullable = false)
-    private String name;
+    private String filling_name;
     @Column(nullable = false)
     private Double pricePerKg;
+
+
+    public void setFilling_Name(String filling_name) {
+        this.filling_name = filling_name;
+    }
+
+    public void setPricePerKg(Double pricePerKg) {
+        this.pricePerKg = pricePerKg;
+    }
+
 }

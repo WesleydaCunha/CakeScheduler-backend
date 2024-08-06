@@ -19,7 +19,15 @@ public class CakeModel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(nullable = false)
-    private String name;
+    private String cake_name;
     @Column(nullable = false)
     private String image;
+
+    public void setCake_name(String cake_name) {
+        this.cake_name = cake_name;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
 }

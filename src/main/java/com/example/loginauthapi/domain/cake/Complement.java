@@ -17,8 +17,16 @@ public class Complement {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(nullable = false)
-    private String name;
+    private String complement_name;
     @Column(nullable = false)
     private Double price;
+
+    public void setComplement_name(String complement_name) {
+        this.complement_name = complement_name;
+    }
+
+    public void setPrice(Double price) {
+        this.price = price;
+    }
 
 }

@@ -17,5 +17,9 @@ public class PaymentMethod {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(nullable = false)
-    private String name;
+    private String payment_type;
+
+    public void setPayment_type(String payment_type) {
+        this.payment_type = payment_type;
+    }
 }
