@@ -2,6 +2,7 @@ package com.example.cakescheduler.infra.security;
 
 import com.example.cakescheduler.domain.user.UserEmployee;
 import com.example.cakescheduler.repositories.UserEmployeeRepository;
+import io.github.cdimascio.dotenv.Dotenv;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
@@ -26,14 +27,20 @@ public class CreateUserEmployeeDefault {
     public CommandLineRunner createDefaultUser() {
         return args -> {
             // Adiciona log para verificar se o método está sendo chamado
+            Dotenv dotenv = Dotenv.load();
+            String email = dotenv.get("DEFAULT_USER_EMPLOYEE_EMAIL");
+            String password = dotenv.get("DEFAULT_USER_EMPLOYEE_PASSWORD");
+            String name = dotenv.get("DEFAULT_USER_EMPLOYEE_NAME");
+            String phone = dotenv.get("DEFAULT_USER_EMPLOYEE_PHONE");
+
             System.out.println("Checking if master user exists...");
-            Optional<UserEmployee> user = repository.findByEmail("wesleydacunhafrancisco@hotmail.com");
+            Optional<UserEmployee> user = repository.findByEmail(email);
             if (user.isEmpty()) {
                 UserEmployee newUserEmployee = new UserEmployee();
-                newUserEmployee.setPassword(passwordEncoder.encode("123456"));
-                newUserEmployee.setEmail("wesleydacunhafrancisco@hotmail.com");
-                newUserEmployee.setName("Master Company");
-                newUserEmployee.setPhone("999999999");
+                newUserEmployee.setPassword(passwordEncoder.encode(password));
+                newUserEmployee.setEmail(email);
+                newUserEmployee.setName(name);
+                newUserEmployee.setPhone(phone);
 
                 repository.save(newUserEmployee);
 
