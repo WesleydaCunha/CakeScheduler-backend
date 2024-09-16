@@ -13,8 +13,12 @@
 - **Rota de agendamentos para funcionários gerenciarem pedidos.**
 
 ## Como Rodar o Projeto
-- Node.js v14+ e npm instalados.
+
+### Pré-requisitos
+
 - Java 17+, Maven e PostgreSQL instalados.
+
+### Instalação
 
 1. Clone o repositório do backend:
 
