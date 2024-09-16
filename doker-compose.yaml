@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+  login-auth-api:
+    image: openjdk:17-jdk-slim
+    container_name: login-auth-api
+    environment:
+      SPRING_APPLICATION_NAME: login-auth-api
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_JPA_SHOW_SQL: "true"
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/CakeScheduler?sslmode=require
+      SPRING_DATASOURCE_USERNAME: CakeScheduler_owner
+      SPRING_DATASOURCE_PASSWORD: p8IysjZxHM6K
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.postgresql.Driver
+      API_SECURITY_TOKEN_SECRET: my-secret-key-from-video
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    volumes:
+      - ./login-auth-api:/app
+    command: [ "sh", "-c", "cd /app && ./mvnw spring-boot:run" ]
+    networks:
+      - app-network
+
+  db:
+    image: postgres:15
+    container_name: postgres-db
+    environment:
+      POSTGRES_DB: CakeScheduler
+      POSTGRES_USER: CakeScheduler_owner
+      POSTGRES_PASSWORD: p8IysjZxHM6K
+    ports:
+      - "5432:5432"
+    networks:
+      - app-network
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  postgres-data:
