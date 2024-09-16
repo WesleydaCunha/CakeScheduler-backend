@@ -9,10 +9,10 @@ services:
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
       SPRING_JPA_SHOW_SQL: "true"
       SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/CakeScheduler?sslmode=require
-      SPRING_DATASOURCE_USERNAME: CakeScheduler_owner
-      SPRING_DATASOURCE_PASSWORD: p8IysjZxHM6K
+      SPRING_DATASOURCE_USERNAME: example_user
+      SPRING_DATASOURCE_PASSWORD: example_password
       SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.postgresql.Driver
-      API_SECURITY_TOKEN_SECRET: my-secret-key-from-video
+      API_SECURITY_TOKEN_SECRET: example-secret-key
     ports:
       - "8080:8080"
     depends_on:
@@ -28,8 +28,8 @@ services:
     container_name: postgres-db
     environment:
       POSTGRES_DB: CakeScheduler
-      POSTGRES_USER: CakeScheduler_owner
-      POSTGRES_PASSWORD: p8IysjZxHM6K
+      POSTGRES_USER: example_user
+      POSTGRES_PASSWORD: example_password
     ports:
       - "5432:5432"
     networks:
